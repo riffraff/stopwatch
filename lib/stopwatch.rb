@@ -15,6 +15,11 @@ module Stopwatch
   end
   ActionController::Base.send :include, ControllerRenderHook
 
+  def self.template
+    f = ::File
+    @@template ||= f.read(f.join(f.dirname(__FILE__), 'view.erb'))
+  end
+
   class Railtie < Rails::Railtie
     initializer "newplugin.initialize" do |app|
       app.config.middleware.use "Rack::LoadSpeed"

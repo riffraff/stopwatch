@@ -56,7 +56,7 @@ HTML
     position: absolute;
     top: 0;
     right: 0;
-    height: auto;
+    height: 25px;
 
     width: 140px;
     overflow: hidden;

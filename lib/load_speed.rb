@@ -25,9 +25,25 @@ module Rack
   protected
 
     def performance_code
-      events = "<table id='performance_table'><tr><td></td><td>duration (ms)</td><td>queries</td></tr>"
-      Stopwatch::Log.events.each do |event|
-        events << "<tr><td>#{event.template}</td><td>#{event.duration}</td><td>#{event.query_count}</td></tr>"
+      events = "<table id='performance_table'><tr><th></th><th>duration (ms)</th><th>queries</th></tr>"
+      Stopwatch::Log.events.each_with_index do |event, idx|
+        queries = event.queries.map {|p| "<li>#{p[:sql]}</li>"}.join("\n")
+        query_line = queries == '' ? '' : %{<a href="#evt-#{idx}">show</a>/<a href="#">hide</a>}
+        events << <<-HTML
+<tr id="evt-#{idx}">
+  <td>#{event.template}</td> 
+  <td>#{event.duration}</td> 
+  <td>#{event.query_count}</td> 
+  <td>#{query_line}</td>
+</tr>
+<tr class="queries">
+  <td colspan="4" align="right">
+    <ol>
+      #{queries}
+    </ol>
+  </td>
+</tr>
+HTML
       end
       event = Stopwatch::Log.event
       events << "<tr><td>#{event.payload[:path]}</td><td>#{event.duration}</td><td>#{Stopwatch::Log.query_count}</td></tr>"
@@ -40,7 +56,8 @@ module Rack
     position: absolute;
     top: 0;
     right: 0;
-    height: 25px;
+    height: auto;
+
     width: 140px;
     overflow: hidden;
     background-color: #DE7A93;
@@ -54,7 +71,7 @@ module Rack
 
   #performance_code:hover {
     height: auto;
-    width: auto;
+    width: 600px;
     padding-bottom: 10px;
   }
 
@@ -63,6 +80,14 @@ module Rack
 
   table#performance_table td {
     padding-right: 15px;
+  }
+  
+  table#performance_table tr.queries {
+    display: none;
+    font-size: smaller;
+  }
+  table#performance_table tr:target + .queries {
+    display:block !important;
   }
 </style>
 <div id="performance_code">

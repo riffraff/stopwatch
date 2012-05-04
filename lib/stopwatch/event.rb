@@ -1,9 +1,13 @@
 module Stopwatch
   class Event
-    attr_accessor :query_count
+    attr_accessor :queries
 
     def initialize(event)
       @event = event
+    end
+
+    def query_count
+      queries.size
     end
 
     def template

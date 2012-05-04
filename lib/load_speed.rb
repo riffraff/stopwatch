@@ -25,19 +25,30 @@ module Rack
   protected
 
     def performance_code
-      events = "<table id='performance_table'><tr><th></th><th>duration (ms)</th><th>queries</th></tr>"
+      # to avoid reopening on page reload
+      unique_page_id = Time.now.to_i.to_s
+      events = <<-HEADER
+ <table id='performance_table'>
+  <tr>
+    <td colspan="55%">event</td>
+    <td colspan="15%">time (ms)</td>
+    <td colspan="15%">queries</td>
+    <td colspan="15%">actions </td>
+  </tr>
+ HEADER
       Stopwatch::Log.events.each_with_index do |event, idx|
+        indexed_unique_id = "evt-#{unique_page_id}-#{idx}"
         queries = event.queries.map {|p| "<li>#{p[:sql]}</li>"}.join("\n")
-        query_line = queries == '' ? '' : %{<a href="#evt-#{idx}">show</a>/<a href="#">hide</a>}
+        query_line = queries == '' ? '' : %{<a href="##{indexed_unique_id}">show</a>/<a href="#">hide</a>}
         events << <<-HTML
-<tr id="evt-#{idx}">
-  <td>#{event.template}</td> 
-  <td>#{event.duration}</td> 
-  <td>#{event.query_count}</td> 
-  <td>#{query_line}</td>
+<tr id="#{indexed_unique_id}" >
+  <td colspan="55%">#{event.template}   </td>
+  <td colspan="15%">#{event.duration}   </td> 
+  <td colspan="15%">#{event.query_count}</td> 
+  <td colspan="15%">#{query_line}       </td>
 </tr>
 <tr class="queries">
-  <td colspan="4" align="right">
+  <td colspan="100%">
     <ol>
       #{queries}
     </ol>
@@ -46,7 +57,14 @@ module Rack
 HTML
       end
       event = Stopwatch::Log.event
-      events << "<tr><td>#{event.payload[:path]}</td><td>#{event.duration}</td><td>#{Stopwatch::Log.query_count}</td></tr>"
+      events << <<-HTML
+<tr>
+  <td colspan="55%">#{event.payload[:path]}</td>
+  <td colspan="15%">#{event.duration}</td>
+  <td colspan="15%">#{Stopwatch::Log.query_count}</td>
+  <td colspan="15%"></td>
+</tr>"
+HTML
       events << "</table>"
 
       html = <<-EOF
@@ -69,6 +87,7 @@ HTML
     text-align: right;
   }
 
+
   #performance_code:hover {
     height: auto;
     width: 600px;
@@ -76,6 +95,8 @@ HTML
   }
 
   table#performance_table {
+    width: 100%;
+    table-layout: fixed;
   }
 
   table#performance_table td {
@@ -85,6 +106,10 @@ HTML
   table#performance_table tr.queries {
     display: none;
     font-size: smaller;
+  }
+  table#performance_table tr.queries li {
+    width: 500px;
+    text-align:left;
   }
   table#performance_table tr:target + .queries {
     display:block !important;

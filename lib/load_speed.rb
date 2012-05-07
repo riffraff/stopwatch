@@ -1,11 +1,6 @@
 module Rack
   class LoadSpeed
 
-    def self.template
-      f=::File
-      @@template ||= f.read(f.join(f.dirname(__FILE__), 'view.erb'))
-    end
-
     def initialize(app)
       @app = app
     end
@@ -33,17 +28,19 @@ module Rack
     def performance_code
       # to avoid reopening on page reload
       unique_page_id = Time.now.to_i.to_s
+
+      current_log = Stopwatch.current_log
+
       # items is soemthing like
       # [[first col, second col, third col, fourth col, payload data, unique id]]
-       
       items = []
       items << ['event', 'time (ms)', 'queries', 'actions']
-      Stopwatch::Log.events.each_with_index do |event, idx|
+      current_log.events.each_with_index do |event, idx|
         indexed_unique_id = "evt-#{unique_page_id}-#{idx}"
         items << [event.template, event.duration, event.query_count, nil, event.queries, indexed_unique_id]
       end
-      event = Stopwatch::Log.event
-      items << [event.payload[:path], event.duration, Stopwatch::Log.query_count]
+      event = current_log.event
+      items << [event.payload[:path], event.duration, current_log.query_count]
 
       ERB.new(Stopwatch.template).result(binding)
     end

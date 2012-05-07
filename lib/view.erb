@@ -46,8 +46,8 @@
   }
 </style>
 <div id="performance_code">
-  <strong><%= Stopwatch::Log.event.duration.to_i %></strong> ms
-  <strong><%= Stopwatch::Log.query_count %></strong> queries
+  <strong><%= current_log.event.duration.to_i %></strong> ms
+  <strong><%= current_log.query_count %></strong> queries
  <table id='performance_table'>
   <% items.each do |name, time, count, acts, queries, uid| %>
     <tr id="<%= uid %>">
@@ -67,7 +67,7 @@
         <td colspan="100%">
           <ol>
             <% queries.each do |p| %>
-              <li><%= p[:sql] %></li>
+              <li><%= p[:sql] %> <span>(p.duration</span> </li>
             <% end %>
           </ol>
         </td>

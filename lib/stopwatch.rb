@@ -23,6 +23,9 @@ module Stopwatch
   def self.template
     @@template ||= ::File.read(::File.join(::File.dirname(__FILE__), 'view.erb'))
   end
+  def self.template=(value)
+    @@template = value
+  end
 
   class Railtie < Rails::Railtie
     initializer "newplugin.initialize" do |app|

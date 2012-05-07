@@ -65,11 +65,12 @@
     <% if queries && !queries.empty? %>
       <tr class="queries">
         <td colspan="100%">
-          <ol>
-            <% queries.each do |p| %>
-              <li><%= p.payload[:sql] %> <span>(<%=p.duration %>)</span> </li>
-            <% end %>
-          </ol>
+          <% queries.each do |p| %>
+            <tr colspan="85%">
+              <td><%= p.payload[:sql] %></td> 
+              <td><%=p.duration %></td> 
+            </tr>
+          <% end %>
         </td>
       </tr>
     <% end %>

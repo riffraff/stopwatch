@@ -67,7 +67,7 @@
         <td colspan="100%">
           <ol>
             <% queries.each do |p| %>
-              <li><%= p[:sql] %> <span>(p.duration</span> </li>
+              <li><%= p.payload[:sql] %> <span>(p.duration)</span> </li>
             <% end %>
           </ol>
         </td>

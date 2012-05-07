@@ -42,7 +42,7 @@ module Stopwatch
         if payload[:name] !~ /^CACHE| Indexes$/
           event = ActiveSupport::Notifications::Event.new(name, start, finish, id, payload)
           Stopwatch.current_log.increment_query_count
-          Stopwatch.current_log.add_sub_query payload
+          Stopwatch.current_log.add_sub_query event
         end
       end
 

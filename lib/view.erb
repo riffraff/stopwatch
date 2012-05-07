@@ -5,8 +5,10 @@
     top: 0;
     right: 0;
     height: 25px;
+    height: auto;
 
     width: 140px;
+    width: 600px;
     overflow: hidden;
     background-color: #DE7A93;
     color: white;
@@ -33,19 +35,23 @@
     padding-right: 15px;
   }
   
-  table#performance_table tr.queries {
+  table#performance_table .queries {
     display: none;
+    height: 0;
     font-size: smaller;
+    background-color: #a7a7a7;
   }
-  table#performance_table tr.queries li {
+  table#performance_table .queries {
     width: 500px;
     text-align:left;
   }
   table#performance_table tr:target + .queries {
-    display:block !important;
+    display: block;
+    height: auto;
   }
 </style>
 <div id="performance_code">
+  asd2 
   <strong><%= current_log.event.duration.to_i %></strong> ms
   <strong><%= current_log.query_count %></strong> queries
  <table id='performance_table'>
@@ -64,13 +70,15 @@
     </tr>
     <% if queries && !queries.empty? %>
       <tr class="queries">
-        <td colspan="100%">
-          <% queries.each do |p| %>
-            <tr colspan="85%">
-              <td><%= p.payload[:sql] %></td> 
-              <td><%=p.duration %></td> 
-            </tr>
-          <% end %>
+        <td>
+          <table>
+            <% queries.each do |p| %>
+              <tr>
+                <td colspan="85%"> <%=html_escape p.payload[:sql] %> </td>
+                <td colspan="15%"> <%=html_escape p.duration %>       </td>
+              </tr>
+            <% end %>
+          </table>
         </td>
       </tr>
     <% end %>

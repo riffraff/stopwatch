@@ -26,9 +26,12 @@
     padding-bottom: 10px;
   }
 
+  #performance_code table {
+    table-layout: fixed;
+  }
+
   table#performance_table {
     width: 100%;
-    table-layout: fixed;
   }
 
   table#performance_table td {
@@ -37,18 +40,25 @@
   
   table#performance_table .queries {
     display: none;
-    height: 0;
     font-size: smaller;
-    background-color: #a7a7a7;
   }
-  table#performance_table .queries {
-    width: 500px;
+  table#performance_table .queries tr {
     text-align:left;
   }
   table#performance_table tr:target + .queries {
     display: block;
-    height: auto;
   }
+
+  .queries table {
+    width: 600px;
+  }
+  .queries table tr {
+    background-color: #F18EA6;
+  }
+  .queries table tr:nth-child(2n+1) {
+    background-color: #DE7A93;
+  }
+}
 </style>
 <div id="performance_code">
   asd2 
@@ -72,10 +82,14 @@
       <tr class="queries">
         <td>
           <table>
+              <tr>
+                <td colspan="90%"> sql </td>
+                <td colspan="10%"> ms  </td>
+              </tr>
             <% queries.each do |p| %>
               <tr>
-                <td colspan="85%"> <%=html_escape p.payload[:sql] %> </td>
-                <td colspan="15%"> <%=html_escape p.duration %>       </td>
+                <td colspan="90%"> <%=html_escape p.payload[:sql] %> </td>
+                <td colspan="10%" align="center"> <%=html_escape p.duration.round(2) %>       </td>
               </tr>
             <% end %>
           </table>

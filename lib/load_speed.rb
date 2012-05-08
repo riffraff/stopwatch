@@ -42,6 +42,7 @@ module Rack
       event = current_log.event
       items << [event.payload[:path], event.duration, current_log.query_count]
 
+      include ERB::Util
       ERB.new(Stopwatch.template).result(binding)
     end
   end

@@ -42,7 +42,7 @@ module Stopwatch
 
       # Every query
       ActiveSupport::Notifications.subscribe "sql.active_record" do |name, start, finish, id, payload|
-        if payload[:name] !~ /^CACHE| Indexes$/
+        if payload[:name] !~ /^CACHE| Indexes|SCHEMA$/
           event = ActiveSupport::Notifications::Event.new(name, start, finish, id, payload)
           Stopwatch.current_log.increment_query_count
           Stopwatch.current_log.add_sub_query event
